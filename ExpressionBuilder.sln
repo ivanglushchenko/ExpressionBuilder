@@ -1,0 +1,32 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio 2012
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ExpressionBuilder.Demo", "ExpressionBuilder.Demo\ExpressionBuilder.Demo.csproj", "{FA60F916-960E-4B63-9BBD-CEB58C6B5423}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ExpressionBuilder", "ExpressionBuilder\ExpressionBuilder.csproj", "{2D05694B-5DD9-431C-B612-C20527B55F95}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ExpressionBuilder.Tests", "ExpressionBuilder.Tests\ExpressionBuilder.Tests.csproj", "{43F369B0-57A4-4177-8117-19C45E7992DF}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{FA60F916-960E-4B63-9BBD-CEB58C6B5423}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{FA60F916-960E-4B63-9BBD-CEB58C6B5423}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{FA60F916-960E-4B63-9BBD-CEB58C6B5423}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{FA60F916-960E-4B63-9BBD-CEB58C6B5423}.Release|Any CPU.Build.0 = Release|Any CPU
+		{2D05694B-5DD9-431C-B612-C20527B55F95}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{2D05694B-5DD9-431C-B612-C20527B55F95}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{2D05694B-5DD9-431C-B612-C20527B55F95}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{2D05694B-5DD9-431C-B612-C20527B55F95}.Release|Any CPU.Build.0 = Release|Any CPU
+		{43F369B0-57A4-4177-8117-19C45E7992DF}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{43F369B0-57A4-4177-8117-19C45E7992DF}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{43F369B0-57A4-4177-8117-19C45E7992DF}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{43F369B0-57A4-4177-8117-19C45E7992DF}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+EndGlobal

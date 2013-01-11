@@ -1,0 +1,40 @@
+﻿<Window x:Class="ExpressionBuilder.Demo.MainWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:controls="clr-namespace:ExpressionBuilder.Controls;assembly=ExpressionBuilder"
+        xmlns:exp="clr-namespace:ExpressionBuilder.Expressions;assembly=ExpressionBuilder"
+        xmlns:sys="clr-namespace:System;assembly=mscorlib"
+        xmlns:local="clr-namespace:ExpressionBuilder.Demo"
+        Title="Expression Bulider Demo" Height="350" Width="525">
+
+    <Window.Resources>
+        <local:ValuesConverter x:Key="ValuesConverter" />
+        <local:ValuesTemplateSelector x:Key="ValuesTemplateSelector" />
+    </Window.Resources>
+
+    <controls:ExpressionViewer Expression="{Binding Expression}" HorizontalAlignment="Center" VerticalAlignment="Center" RightValueTemplateSelector="{StaticResource ValuesTemplateSelector}">
+        <controls:ExpressionViewer.Resources>
+            <DataTemplate x:Key="DT_Empty">
+                <TextBox Text="&lt;- select a column" BorderBrush="Transparent" IsReadOnly="True" />
+            </DataTemplate>
+
+            <DataTemplate x:Key="DT_Text">
+                <TextBox Text="{Binding Value, UpdateSourceTrigger=PropertyChanged}" MinWidth="30" BorderBrush="Transparent" TextAlignment="Center" />
+            </DataTemplate>
+
+            <DataTemplate x:Key="DT_ComboBox">
+                <ComboBox MinWidth="50" SelectedItem="{Binding Value}" ItemsSource="{Binding Parent.Left.Value, Converter={StaticResource ValuesConverter}}" />
+            </DataTemplate>
+
+            <DataTemplate DataType="{x:Type exp:LeftValueExpression}">
+                <ComboBox MinWidth="50" SelectedItem="{Binding Value}">
+                    <sys:String>First Name</sys:String>
+                    <sys:String>Last Name</sys:String>
+                    <sys:String>Gender</sys:String>
+                    <sys:String>Age</sys:String>
+                </ComboBox>
+            </DataTemplate>
+        </controls:ExpressionViewer.Resources>
+    </controls:ExpressionViewer>
+
+</Window>

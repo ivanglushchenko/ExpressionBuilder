@@ -1,0 +1,429 @@
+<ResourceDictionary
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:controls="clr-namespace:ExpressionBuilder.Controls"
+    xmlns:conv="clr-namespace:ExpressionBuilder.Converters"
+    xmlns:exp="clr-namespace:ExpressionBuilder.Expressions">
+
+    <ControlTemplate x:Key="CT_Expander" TargetType="ToggleButton">
+        <Grid x:Name="grid" Background="Transparent" Opacity="0.4">
+            <Grid VerticalAlignment="Center" HorizontalAlignment="Center" x:Name="CollapseArrow">
+                <Rectangle Stroke="Gray" StrokeThickness="1" Width="11" Height="11" HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                <Border HorizontalAlignment="Center" VerticalAlignment="Center" Width="7" Height="1" BorderBrush="Gray" BorderThickness="1"/>
+                <Border HorizontalAlignment="Center" VerticalAlignment="Center" Width="1" Height="7" BorderBrush="Gray" BorderThickness="1" x:Name="bdVert" Visibility="Collapsed"/>
+            </Grid>
+        </Grid>
+        <ControlTemplate.Triggers>
+            <Trigger Property="IsChecked" Value="False">
+                <Setter TargetName="bdVert" Property="Visibility" Value="Visible" />
+            </Trigger>
+            <Trigger Property="IsMouseOver" Value="True">
+                <Setter TargetName="grid" Property="Opacity" Value="1" />
+            </Trigger>
+        </ControlTemplate.Triggers>
+    </ControlTemplate>
+
+    <Style TargetType="{x:Type controls:NiceComboBox}">
+        <Setter Property="SnapsToDevicePixels" Value="true"/>
+        <Setter Property="ScrollViewer.HorizontalScrollBarVisibility" Value="Auto"/>
+        <Setter Property="ScrollViewer.VerticalScrollBarVisibility" Value="Auto"/>
+        <Setter Property="ScrollViewer.CanContentScroll" Value="true"/>
+        <Setter Property="BorderThickness" Value="0,0,0,1" />
+        <Setter Property="Template">
+            <Setter.Value>
+                <ControlTemplate TargetType="{x:Type controls:NiceComboBox}">
+                    <Grid>
+                        <ToggleButton Name="ToggleButton" Opacity="0" Focusable="false" IsChecked="{Binding Path=IsDropDownOpen,Mode=TwoWay,RelativeSource={RelativeSource TemplatedParent}}" ClickMode="Press" HorizontalAlignment="Stretch" VerticalAlignment="Stretch">
+                            <ToggleButton.Template>
+                                <ControlTemplate TargetType="ToggleButton">
+                                    <DockPanel Background="Transparent" LastChildFill="False">
+                                        <Path DockPanel.Dock="Right" x:Name="Arrow" Fill="Gray" HorizontalAlignment="Right" VerticalAlignment="Center" Data="M 0 0 L 4 4 L 8 0 Z"/>
+                                    </DockPanel>
+                                </ControlTemplate>
+                            </ToggleButton.Template>
+                        </ToggleButton>
+
+                        <Border BorderBrush="LightGray" BorderThickness="{TemplateBinding BorderThickness}" Margin="0,0,10,0" IsHitTestVisible="False">
+                            <ContentPresenter ContentSource="Content" />
+                        </Border>
+
+                        <Popup Name="Popup" Placement="Bottom" IsOpen="{TemplateBinding IsDropDownOpen}" AllowsTransparency="True" Focusable="False" PopupAnimation="Slide">
+                            <Grid Name="DropDown" SnapsToDevicePixels="True" MinWidth="{TemplateBinding ActualWidth}" MaxHeight="{TemplateBinding MaxDropDownHeight}">
+                                <Border x:Name="DropDownBorder" Background="Wheat" BorderThickness="1" BorderBrush="Gray"/>
+                                <ScrollViewer Margin="4,6,4,6" SnapsToDevicePixels="True">
+                                    <StackPanel IsItemsHost="True" KeyboardNavigation.DirectionalNavigation="Contained" />
+                                </ScrollViewer>
+                            </Grid>
+                        </Popup>
+                    </Grid>
+                    <ControlTemplate.Triggers>
+                        <Trigger Property="HasItems" Value="false">
+                            <Setter TargetName="DropDownBorder" Property="MinHeight" Value="95"/>
+                        </Trigger>
+                        <Trigger Property="IsEnabled" Value="false">
+                            <Setter Property="Foreground" Value="Gray"/>
+                        </Trigger>
+                        <Trigger Property="IsGrouping" Value="true">
+                            <Setter Property="ScrollViewer.CanContentScroll" Value="false"/>
+                        </Trigger>
+                        <Trigger SourceName="Popup" Property="Popup.AllowsTransparency" Value="true">
+                            <Setter TargetName="DropDownBorder" Property="CornerRadius" Value="4"/>
+                            <Setter TargetName="DropDownBorder" Property="Margin" Value="0,2,0,0"/>
+                        </Trigger>
+                        <Trigger Property="IsMouseOver" Value="True">
+                            <Setter TargetName="ToggleButton" Property="Opacity" Value="1" />
+                        </Trigger>
+                    </ControlTemplate.Triggers>
+                </ControlTemplate>
+            </Setter.Value>
+        </Setter>
+    </Style>
+
+    <Style TargetType="{x:Type controls:NiceComboBoxItem}">
+        <Setter Property="Background" Value="Transparent" />
+        <Setter Property="BorderThickness" Value="1" />
+        <Setter Property="Template">
+            <Setter.Value>
+                <ControlTemplate TargetType="{x:Type controls:NiceComboBoxItem}">
+                    <Border Background="{TemplateBinding Background}"
+                            BorderBrush="{TemplateBinding BorderBrush}"
+                            BorderThickness="{TemplateBinding BorderThickness}" Padding="3">
+                        <ContentPresenter />
+                    </Border>
+                </ControlTemplate>
+            </Setter.Value>
+        </Setter>
+        <Style.Triggers>
+            <Trigger Property="IsMouseOver" Value="True">
+                <Setter Property="BorderBrush" Value="LightBlue" />
+                <Setter Property="Background" Value="Blue" />
+                <Setter Property="Foreground" Value="White" />
+            </Trigger>
+        </Style.Triggers>
+    </Style>
+    
+    <Style TargetType="{x:Type controls:ExpressionViewer}">
+        <Setter Property="Template">
+            <Setter.Value>
+                <ControlTemplate TargetType="{x:Type controls:ExpressionViewer}">
+                    <ScrollViewer HorizontalScrollBarVisibility="Auto" VerticalScrollBarVisibility="Auto" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" Background="Transparent">
+                        <ContentControl Content="{Binding ExtendedExpression, RelativeSource={RelativeSource Mode=TemplatedParent}}" HorizontalAlignment="Center" VerticalAlignment="Center" />
+                    </ScrollViewer>
+                </ControlTemplate>
+            </Setter.Value>
+        </Setter>
+    </Style>
+
+    <conv:CompExpItemsConverter x:Key="CompExpItemsConverter" />
+
+    <conv:SelectorItemConverter x:Key="SelectorItemConverter" />
+
+    <conv:StringIsNotNullConverter x:Key="StringIsNotNullConverter" />
+
+    <DataTemplate x:Key="DT_Value">
+        <Border x:Name="bd" BorderThickness="1" BorderBrush="Red" Margin="5,0,5,5">
+            <ContentControl x:Name="CC" Margin="5" Content="{Binding}" />
+        </Border>
+        <DataTemplate.Triggers>
+            <DataTrigger Binding="{Binding Error}" Value="{x:Null}">
+                <Setter TargetName="bd" Property="BorderBrush" Value="LightGreen" />
+            </DataTrigger>
+        </DataTemplate.Triggers>
+    </DataTemplate>
+    
+    <Style TargetType="{x:Type controls:ComparisionExpressionViewer}">
+        <Setter Property="Template">
+            <Setter.Value>
+                <ControlTemplate TargetType="{x:Type controls:ComparisionExpressionViewer}">
+                    <Border x:Name="bd" BorderThickness="1" BorderBrush="Transparent" Padding="5" Background="Transparent">
+                        <DockPanel>
+                            <DockPanel DockPanel.Dock="Top" HorizontalAlignment="Center">
+                                <ToggleButton x:Name="tg" Template="{StaticResource CT_Expander}" DockPanel.Dock="Left" IsChecked="True" />
+
+                                <controls:NiceComboBox Margin="4,0,0,0" Content="{Binding Expression.Type, RelativeSource={RelativeSource Mode=TemplatedParent}}">
+                                    <controls:NiceComboBox.ContentTemplate>
+                                        <DataTemplate>
+                                            <TextBlock x:Name="txt" Text="UNDFND" FontSize="14" />
+                                            <DataTemplate.Triggers>
+                                                <DataTrigger Binding="{Binding}" Value="Equal">
+                                                    <Setter TargetName="txt" Property="Text" Value="=" />
+                                                </DataTrigger>
+                                                <DataTrigger Binding="{Binding}" Value="NotEqual">
+                                                    <Setter TargetName="txt" Property="Text" Value="&lt;&gt;" />
+                                                </DataTrigger>
+                                                <DataTrigger Binding="{Binding}" Value="Like">
+                                                    <Setter TargetName="txt" Property="Text" Value="like" />
+                                                </DataTrigger>
+                                                <DataTrigger Binding="{Binding}" Value="NotLike">
+                                                    <Setter TargetName="txt" Property="Text" Value="not like" />
+                                                </DataTrigger>
+                                                <DataTrigger Binding="{Binding}" Value="Greater">
+                                                    <Setter TargetName="txt" Property="Text" Value="&gt;" />
+                                                </DataTrigger>
+                                                <DataTrigger Binding="{Binding}" Value="GreaterOrEqual">
+                                                    <Setter TargetName="txt" Property="Text" Value="&gt;=" />
+                                                </DataTrigger>
+                                                <DataTrigger Binding="{Binding}" Value="Less">
+                                                    <Setter TargetName="txt" Property="Text" Value="&lt;" />
+                                                </DataTrigger>
+                                                <DataTrigger Binding="{Binding}" Value="LessOrEqual">
+                                                    <Setter TargetName="txt" Property="Text" Value="&lt;=" />
+                                                </DataTrigger>
+                                            </DataTemplate.Triggers>
+                                        </DataTemplate>
+                                    </controls:NiceComboBox.ContentTemplate>
+                                    <controls:NiceComboBoxItem Command="{Binding ChangeToEqCommand, RelativeSource={RelativeSource Mode=FindAncestor, AncestorType={x:Type controls:ComparisionExpressionViewer}}}">
+                                        <TextBlock>Change to: <Bold>=</Bold></TextBlock>
+                                    </controls:NiceComboBoxItem>
+                                    <controls:NiceComboBoxItem Command="{Binding ChangeToNotEqCommand, RelativeSource={RelativeSource Mode=FindAncestor, AncestorType={x:Type controls:ComparisionExpressionViewer}}}">
+                                        <TextBlock>Change to: <Bold>&lt;&gt;</Bold></TextBlock>
+                                    </controls:NiceComboBoxItem>
+                                    <controls:NiceComboBoxItem Command="{Binding ChangeToLikeCommand, RelativeSource={RelativeSource Mode=FindAncestor, AncestorType={x:Type controls:ComparisionExpressionViewer}}}">
+                                        <TextBlock>Change to: <Bold>like</Bold></TextBlock>
+                                    </controls:NiceComboBoxItem>
+                                    <controls:NiceComboBoxItem Command="{Binding ChangeToNotLikeCommand, RelativeSource={RelativeSource Mode=FindAncestor, AncestorType={x:Type controls:ComparisionExpressionViewer}}}">
+                                        <TextBlock>Change to: <Bold>not like</Bold></TextBlock>
+                                    </controls:NiceComboBoxItem>
+                                    <controls:NiceComboBoxItem Command="{Binding ChangeToGreaterCommand, RelativeSource={RelativeSource Mode=FindAncestor, AncestorType={x:Type controls:ComparisionExpressionViewer}}}">
+                                        <TextBlock>Change to: <Bold>&gt;</Bold></TextBlock>
+                                    </controls:NiceComboBoxItem>
+                                    <controls:NiceComboBoxItem Command="{Binding ChangeToGreaterOrEqCommand, RelativeSource={RelativeSource Mode=FindAncestor, AncestorType={x:Type controls:ComparisionExpressionViewer}}}">
+                                        <TextBlock>Change to: <Bold>&gt;=</Bold></TextBlock>
+                                    </controls:NiceComboBoxItem>
+                                    <controls:NiceComboBoxItem Command="{Binding ChangeToLessCommand, RelativeSource={RelativeSource Mode=FindAncestor, AncestorType={x:Type controls:ComparisionExpressionViewer}}}">
+                                        <TextBlock>Change to: <Bold>&lt;</Bold></TextBlock>
+                                    </controls:NiceComboBoxItem>
+                                    <controls:NiceComboBoxItem Command="{Binding ChangeToLessOrEqCommand, RelativeSource={RelativeSource Mode=FindAncestor, AncestorType={x:Type controls:ComparisionExpressionViewer}}}">
+                                        <TextBlock>Change to: <Bold>&lt;=</Bold></TextBlock>
+                                    </controls:NiceComboBoxItem>
+                                    <Separator />
+                                    <controls:NiceComboBoxItem Command="{Binding WrapWithAndCommand, RelativeSource={RelativeSource Mode=FindAncestor, AncestorType={x:Type controls:ComparisionExpressionViewer}}}">
+                                        <TextBlock>Wrap with: <Bold>and</Bold></TextBlock>
+                                    </controls:NiceComboBoxItem>
+                                    <controls:NiceComboBoxItem Command="{Binding WrapWithOrCommand, RelativeSource={RelativeSource Mode=FindAncestor, AncestorType={x:Type controls:ComparisionExpressionViewer}}}">
+                                        <TextBlock>Wrap with: <Bold>or</Bold></TextBlock>
+                                    </controls:NiceComboBoxItem>
+                                    <Separator />
+                                    <controls:NiceComboBoxItem Command="{Binding RemoveCommand, RelativeSource={RelativeSource Mode=FindAncestor, AncestorType={x:Type controls:ComparisionExpressionViewer}}}">Remove this expression</controls:NiceComboBoxItem>
+                                </controls:NiceComboBox>
+                            </DockPanel>
+
+                            <controls:NiceListPanel x:Name="list">
+                                <ContentControl Content="{Binding Left}">
+                                    <ContentControl.ContentTemplate>
+                                        <DataTemplate>
+                                            <Border x:Name="bd" BorderThickness="1" BorderBrush="Red" Margin="5,0,5,5">
+                                                <ContentControl x:Name="CC" Margin="5" Content="{Binding}" ContentTemplateSelector="{Binding LeftValueTemplateSelector, RelativeSource={RelativeSource Mode=FindAncestor, AncestorType={x:Type controls:ExpressionViewer}}}" />
+                                            </Border>
+                                            <DataTemplate.Triggers>
+                                                <DataTrigger Binding="{Binding Error}" Value="{x:Null}">
+                                                    <Setter TargetName="bd" Property="BorderBrush" Value="LightGreen" />
+                                                </DataTrigger>
+                                            </DataTemplate.Triggers>
+                                        </DataTemplate>
+                                    </ContentControl.ContentTemplate>
+                                </ContentControl>
+                                <ContentControl Content="{Binding Right}">
+                                    <ContentControl.ContentTemplate>
+                                        <DataTemplate>
+                                            <Border x:Name="bd" BorderThickness="1" BorderBrush="Red" Margin="5,0,5,5">
+                                                <ContentControl x:Name="CC" Margin="5" Content="{Binding}" ContentTemplateSelector="{Binding RightValueTemplateSelector, RelativeSource={RelativeSource Mode=FindAncestor, AncestorType={x:Type controls:ExpressionViewer}}}" />
+                                            </Border>
+                                            <DataTemplate.Triggers>
+                                                <DataTrigger Binding="{Binding Error}" Value="{x:Null}">
+                                                    <Setter TargetName="bd" Property="BorderBrush" Value="LightGreen" />
+                                                </DataTrigger>
+                                            </DataTemplate.Triggers>
+                                        </DataTemplate>
+                                    </ContentControl.ContentTemplate>
+                                </ContentControl>
+                            </controls:NiceListPanel>
+                        </DockPanel>
+                    </Border>
+                    <ControlTemplate.Triggers>
+                        <Trigger SourceName="tg" Property="IsChecked" Value="False">
+                            <Setter TargetName="list" Property="Visibility" Value="Collapsed" />
+                        </Trigger>
+                        <MultiDataTrigger>
+                            <MultiDataTrigger.Conditions>
+                                <Condition Binding="{Binding Error}" Value="{x:Null}" />
+								<Condition Binding="{Binding IsHighlighted, RelativeSource={RelativeSource Mode=Self}}" Value="True" />
+                                <Condition Binding="{Binding IsMouseOver, RelativeSource={RelativeSource Mode=Self}}" Value="True" />
+                            </MultiDataTrigger.Conditions>
+                            <Setter TargetName="bd" Property="BorderBrush" Value="LightBlue" />
+                        </MultiDataTrigger>
+                        <MultiDataTrigger>
+                            <MultiDataTrigger.Conditions>
+                                <Condition Binding="{Binding Error, Converter={StaticResource StringIsNotNullConverter}}" Value="True" />
+								<Condition Binding="{Binding IsHighlighted, RelativeSource={RelativeSource Mode=Self}}" Value="True" />
+                                <Condition Binding="{Binding IsMouseOver, RelativeSource={RelativeSource Mode=Self}}" Value="True" />
+                            </MultiDataTrigger.Conditions>
+                            <Setter TargetName="bd" Property="BorderBrush" Value="#60FF0000" />
+                        </MultiDataTrigger>
+                    </ControlTemplate.Triggers>
+                </ControlTemplate>
+            </Setter.Value>
+        </Setter>
+    </Style>
+
+    <Style TargetType="{x:Type controls:LogicalExpressionViewer}">
+        <Setter Property="Template">
+            <Setter.Value>
+                <ControlTemplate TargetType="{x:Type controls:LogicalExpressionViewer}">
+                    <Border x:Name="bd" BorderThickness="1" BorderBrush="Transparent" Background="Transparent" Padding="5">
+                        <DockPanel>
+                            <DockPanel DockPanel.Dock="Top" HorizontalAlignment="Center">
+                                <ToggleButton x:Name="tg" Template="{StaticResource CT_Expander}" DockPanel.Dock="Left" IsChecked="True" />
+
+                                <controls:NiceComboBox Margin="4,0,0,0" Content="{Binding Expression.Type, RelativeSource={RelativeSource Mode=TemplatedParent}}">
+                                    <controls:NiceComboBox.ContentTemplate>
+                                        <DataTemplate>
+                                            <TextBlock x:Name="txt" Text="UNDFND" FontSize="14" />
+                                            <DataTemplate.Triggers>
+                                                <DataTrigger Binding="{Binding}" Value="And">
+                                                    <Setter TargetName="txt" Property="Text" Value="and" />
+                                                </DataTrigger>
+                                                <DataTrigger Binding="{Binding}" Value="Or">
+                                                    <Setter TargetName="txt" Property="Text" Value="or" />
+                                                </DataTrigger>
+                                            </DataTemplate.Triggers>
+                                        </DataTemplate>
+                                    </controls:NiceComboBox.ContentTemplate>
+                                    
+                                    <controls:NiceComboBoxItem Command="{Binding ChangeToAndCommand, RelativeSource={RelativeSource Mode=FindAncestor, AncestorType={x:Type controls:LogicalExpressionViewer}}}">
+                                        <TextBlock>Change to: <Bold>and</Bold></TextBlock>
+                                    </controls:NiceComboBoxItem>
+                                    <controls:NiceComboBoxItem Command="{Binding ChangeToOrCommand, RelativeSource={RelativeSource Mode=FindAncestor, AncestorType={x:Type controls:LogicalExpressionViewer}}}">
+                                        <TextBlock>Change to: <Bold>or</Bold></TextBlock>
+                                    </controls:NiceComboBoxItem>
+                                    <Separator />
+                                    <controls:NiceComboBoxItem Command="{Binding RemoveCommand, RelativeSource={RelativeSource Mode=FindAncestor, AncestorType={x:Type controls:LogicalExpressionViewer}}}">Remove this expression</controls:NiceComboBoxItem>
+                                </controls:NiceComboBox>
+                            </DockPanel>
+
+                            <ItemsControl x:Name="list" BorderThickness="0" Padding="0" ItemsSource="{Binding ExtendedOperands, RelativeSource={RelativeSource Mode=TemplatedParent}}" ScrollViewer.CanContentScroll="False">
+                                <ItemsControl.ItemTemplate>
+                                    <DataTemplate>
+                                        <ContentControl Margin="5,0,5,5" Content="{Binding}" />
+                                    </DataTemplate>
+                                </ItemsControl.ItemTemplate>
+                                <ItemsControl.ItemsPanel>
+                                    <ItemsPanelTemplate>
+                                        <controls:NiceListPanel />
+                                    </ItemsPanelTemplate>
+                                </ItemsControl.ItemsPanel>
+                            </ItemsControl>
+                        </DockPanel>
+                    </Border>
+                    <ControlTemplate.Triggers>
+                        <Trigger SourceName="tg" Property="IsChecked" Value="False">
+                            <Setter TargetName="list" Property="Visibility" Value="Collapsed" />
+                        </Trigger>
+                        <MultiDataTrigger>
+                            <MultiDataTrigger.Conditions>
+                                <Condition Binding="{Binding Error}" Value="{x:Null}" />
+                                <Condition Binding="{Binding IsHighlighted, RelativeSource={RelativeSource Mode=Self}}" Value="True" />
+                                <Condition Binding="{Binding IsMouseOver, RelativeSource={RelativeSource Mode=Self}}" Value="True" />
+                            </MultiDataTrigger.Conditions>
+                            <Setter TargetName="bd" Property="BorderBrush" Value="LightBlue" />
+                        </MultiDataTrigger>
+                        <MultiDataTrigger>
+                            <MultiDataTrigger.Conditions>
+                                <Condition Binding="{Binding Error, Converter={StaticResource StringIsNotNullConverter}}" Value="True" />
+                                <Condition Binding="{Binding IsHighlighted, RelativeSource={RelativeSource Mode=Self}}" Value="True" />
+                                <Condition Binding="{Binding IsMouseOver, RelativeSource={RelativeSource Mode=Self}}" Value="True" />
+                            </MultiDataTrigger.Conditions>
+                            <Setter TargetName="bd" Property="BorderBrush" Value="#60FF0000" />
+                        </MultiDataTrigger>
+
+                    </ControlTemplate.Triggers>
+                </ControlTemplate>
+            </Setter.Value>
+        </Setter>
+    </Style>
+
+    <Style TargetType="{x:Type controls:ExpressionPlaceholderViewer}">
+        <Setter Property="Template">
+            <Setter.Value>
+                <ControlTemplate TargetType="{x:Type controls:ExpressionPlaceholderViewer}">
+                    <Grid>
+                        <Rectangle Stroke="LightBlue" StrokeThickness="1" StrokeDashArray="6,4"/>
+
+                        <controls:NiceComboBox BorderThickness="0" Margin="25,23,15,23">
+                            <controls:NiceComboBox.Content>
+                                <Button x:Name="PART_Button" Content="+" Padding="10" HorizontalAlignment="Center" VerticalAlignment="Center">
+                                    <Button.Template>
+                                        <ControlTemplate TargetType="Button">
+                                            <Grid>
+                                                <Rectangle x:Name="r" Stroke="LightBlue" StrokeThickness="1" StrokeDashArray="6,4" Width="35" Height="35"/>
+                                                <TextBlock x:Name="t" Text="+" HorizontalAlignment="Center" VerticalAlignment="Center" FontSize="20" Margin="0,5,0,6" />
+                                            </Grid>
+                                            <ControlTemplate.Triggers>
+                                                <Trigger Property="IsMouseOver" Value="True">
+                                                    <Setter TargetName="r" Property="Fill" Value="LightBlue" />
+                                                    <Setter TargetName="t" Property="Foreground" Value="White" />
+                                                </Trigger>
+                                            </ControlTemplate.Triggers>
+                                        </ControlTemplate>
+                                    </Button.Template>
+                                </Button>
+                            </controls:NiceComboBox.Content>
+                            
+                            <controls:NiceComboBoxItem Command="{Binding AddLogicalAndExpCommand, RelativeSource={RelativeSource Mode=FindAncestor, AncestorType={x:Type controls:ExpressionPlaceholderViewer}}}">
+                                <TextBlock>Add logical expression: <Bold>and</Bold></TextBlock>
+                            </controls:NiceComboBoxItem>
+                            <controls:NiceComboBoxItem Command="{Binding AddLogicalOrExpCommand, RelativeSource={RelativeSource Mode=FindAncestor, AncestorType={x:Type controls:ExpressionPlaceholderViewer}}}">
+                                <TextBlock>Add logical expression: <Bold>or</Bold></TextBlock>
+                            </controls:NiceComboBoxItem>
+                            <Separator/>
+                            <controls:NiceComboBoxItem Command="{Binding AddComparisionEqExpCommand, RelativeSource={RelativeSource Mode=FindAncestor, AncestorType={x:Type controls:ExpressionPlaceholderViewer}}}">
+                                <TextBlock>Add comparision: <Bold>=</Bold></TextBlock>
+                            </controls:NiceComboBoxItem>
+                            <controls:NiceComboBoxItem Command="{Binding AddComparisionNotEqExpCommand, RelativeSource={RelativeSource Mode=FindAncestor, AncestorType={x:Type controls:ExpressionPlaceholderViewer}}}">
+                                <TextBlock>Add comparision: <Bold>&lt;&gt;</Bold></TextBlock>
+                            </controls:NiceComboBoxItem>
+                            <controls:NiceComboBoxItem Command="{Binding AddComparisionLikeExpCommand, RelativeSource={RelativeSource Mode=FindAncestor, AncestorType={x:Type controls:ExpressionPlaceholderViewer}}}">
+                                <TextBlock>Add comparision: <Bold>like</Bold></TextBlock>
+                            </controls:NiceComboBoxItem>
+                            <controls:NiceComboBoxItem Command="{Binding AddComparisionNotLikeExpCommand, RelativeSource={RelativeSource Mode=FindAncestor, AncestorType={x:Type controls:ExpressionPlaceholderViewer}}}">
+                                <TextBlock>Add comparision: <Bold>not like</Bold></TextBlock>
+                            </controls:NiceComboBoxItem>
+                            <controls:NiceComboBoxItem Command="{Binding AddComparisionGreaterExpCommand, RelativeSource={RelativeSource Mode=FindAncestor, AncestorType={x:Type controls:ExpressionPlaceholderViewer}}}">
+                                <TextBlock>Add comparision: <Bold>&gt;</Bold></TextBlock>
+                            </controls:NiceComboBoxItem>
+                            <controls:NiceComboBoxItem Command="{Binding AddComparisionGreaterOrEqExpCommand, RelativeSource={RelativeSource Mode=FindAncestor, AncestorType={x:Type controls:ExpressionPlaceholderViewer}}}">
+                                <TextBlock>Add comparision: <Bold>&gt;=</Bold></TextBlock>
+                            </controls:NiceComboBoxItem>
+                            <controls:NiceComboBoxItem Command="{Binding AddComparisionLessExpCommand, RelativeSource={RelativeSource Mode=FindAncestor, AncestorType={x:Type controls:ExpressionPlaceholderViewer}}}">
+                                <TextBlock>Add comparision: <Bold>&lt;</Bold></TextBlock>
+                            </controls:NiceComboBoxItem>
+                            <controls:NiceComboBoxItem Command="{Binding AddComparisionLessOrEqExpCommand, RelativeSource={RelativeSource Mode=FindAncestor, AncestorType={x:Type controls:ExpressionPlaceholderViewer}}}">
+                                <TextBlock>Add comparision: <Bold>&lt;=</Bold></TextBlock>
+                            </controls:NiceComboBoxItem>
+                        </controls:NiceComboBox>
+                    </Grid>
+                </ControlTemplate>
+            </Setter.Value>
+        </Setter>
+    </Style>
+    
+    <DataTemplate DataType="{x:Type exp:ComparisionExpression}">
+        <controls:ComparisionExpressionViewer Expression="{Binding}" />
+    </DataTemplate>
+    
+    <DataTemplate DataType="{x:Type exp:LogicalExpression}">
+        <controls:LogicalExpressionViewer Expression="{Binding}" />
+    </DataTemplate>
+
+    <DataTemplate DataType="{x:Type exp:ExpressionPlaceholder}">
+        <controls:ExpressionPlaceholderViewer Placeholder="{Binding}" />
+    </DataTemplate>
+
+    <DataTemplate DataType="{x:Type exp:LeftValueExpression}">
+        <TextBox Text="{Binding Value}" Padding="0" BorderThickness="0" />
+    </DataTemplate>
+
+    <DataTemplate DataType="{x:Type exp:RightValueExpression}">
+        <TextBox Text="{Binding Value}" Padding="0" BorderThickness="0" />
+    </DataTemplate>
+</ResourceDictionary>
